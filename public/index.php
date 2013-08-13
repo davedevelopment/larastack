@@ -1,4 +1,8 @@
 <?php
+
+use Symfony\Component\HttpFoundation\Request;
+
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
@@ -44,19 +48,10 @@ $app = require_once __DIR__.'/../bootstrap/start.php';
 | the client's browser allowing them to enjoy the creative
 | and wonderful applications we have created for them.
 |
-*/
+ */
+$stack = (new Stack\Builder());
+$app = $stack->resolve($app);
 
-$app->run();
-
-/*
-|--------------------------------------------------------------------------
-| Shutdown The Application
-|--------------------------------------------------------------------------
-|
-| Once the app has finished running, we will fire off the shutdown events
-| so that any final work may be done by the application before we shut
-| down the process. This is the last thing to happen to the request.
-|
-*/
-
-$app->shutdown();
+$request = Request::createFromGlobals();
+$response = $app->handle($request)->send();
+$app->terminate($request, $response);
